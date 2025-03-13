@@ -26,8 +26,8 @@ export class AvailablePlacesComponent implements OnInit {
     this.isFetching.set(true);
     const subscription = this.placesService.loadAvailablePlaces().subscribe({
       next: (response) => {
-        console.log(response.body?.places);
-        this.places.set(response.body?.places);
+        console.log(response);
+        this.places.set(response);
       },
       complete: () => {
         this.isFetching.update((prevValue) => !prevValue);
