@@ -4,6 +4,7 @@ import { PlacesContainerComponent } from '../places-container/places-container.c
 import { PlacesComponent } from '../places.component';
 import { HttpClient } from '@angular/common/http';
 import { Place } from '../place.model';
+import { PlacesService } from '../places.service';
 
 @Component({
   selector: 'app-user-places',
@@ -14,23 +15,19 @@ import { Place } from '../place.model';
 })
 export class UserPlacesComponent implements OnInit {
 
-  private httpClient = inject(HttpClient)
+  // private httpClient = inject(HttpClient)
+  private placesService = inject(PlacesService)
   private destroyRef = inject(DestroyRef)
-  places = signal<Place[] | undefined>(undefined);
   isFetching = signal(false);
   error = signal('')
+  places = this.placesService.loadedUserPlaces;
 
 
   ngOnInit(): void {
     this.isFetching.set(true);
-    const subscription = this.httpClient.get<{ places: Place[] }>("http://localhost:3000/user-places", {
-      observe: 'response'
-    }).subscribe(
+    const subscription = this.placesService.loadUserPlaces().subscribe(
       {
-        next: (response) => {
-          console.log("userplaces", response)
-          this.places.set(response.body?.places)
-        },
+
         complete: () => {
           this.isFetching.update((prev) => !prev)
         },
